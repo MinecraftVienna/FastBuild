@@ -1,0 +1,19 @@
+name: FastBuild
+main: at.niemeczek.dev.fastbuild.FastBuild
+version: 0.0.1
+author: Harald Niemeczek
+commands:
+  build:
+    description: This builds a roof.
+    usage: " ====================================================\n
+    §cFastBuild Help Menu \n
+    §6/build help \n
+    §r     Displays this help menu \n
+    §6/build roof <Material> [height] \n
+    §r     Builds a roof with [height] layers out of <Material>.\n
+    §r     Default height is 4 Blocks
+====================================================
+    "
+    permission: FastBuild.build
+    permission-message: You don't have permission for that command. You need permission FastBuild.build!
+
