@@ -51,7 +51,7 @@ public class FastBuildCommandExecutor implements CommandExecutor {
     }
 
     /**
-     * Processes the command /build roof
+     * Processes the command /build roof ...
      * Roof is built at the place the player looks at.
      *
      * @param sender Sender of the command. Needs to be player.
@@ -80,8 +80,9 @@ public class FastBuildCommandExecutor implements CommandExecutor {
         }
         // Find out location to start roof building process from.
         Location location = ((Player) sender).getTargetBlock((Set<Material>) null, 30).getLocation();
-        if (location == null) {
-            sender.sendMessage(ChatColor.RED + args[1] + "Please look at the spot you want the roof to be built at!");
+        if (location.getBlock().isEmpty()) {
+            sender.sendMessage(ChatColor.RED + "Please look at the spot you want the roof to be built at! \nMaybe you are too far away?");
+            return true;
         }
 
 

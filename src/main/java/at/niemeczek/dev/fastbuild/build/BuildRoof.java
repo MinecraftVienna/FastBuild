@@ -33,6 +33,7 @@ public class BuildRoof extends Throwable {
         //Tests for zero or negative roof height.
         if (height < 1){
             player.sendMessage("It is impossible to build a roof that has zero or negative height");
+            return false;
         }
 
         int size = 2000;
@@ -115,20 +116,7 @@ public class BuildRoof extends Throwable {
         i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), i - 1, material);
         i = baseLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), i - 1, material);
         i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), i - 1, material);
-        //old code:
-//        if (isEmpty(location, 1, 0, 0) && !isEmpty(location, 1, -1, 0) && i > 1) { // nach "oben"
-//            i = baseLevelFloodFill4Neighbour(location.clone().add(1, 0, 0), --i, material);
-//        }
-//        if (isEmpty(location, 0, 0, 1) && !isEmpty(location, 0, -1, 1) && i > 1) { // nach "links"
-//            i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), --i, material);
-//        }
-//        if (isEmpty(location, -1, 0, 0) && !isEmpty(location, -1, -1, 0) && i > 1) { // nach "unten"
-//            i = baseLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), --i, material);
-//
-//        }
-//        if (isEmpty(location, 0, 0, -1) && !isEmpty(location, 0, -1, -1) && i > 1) { // nach "rechts"
-//            i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), --i, material);
-//        }
+
 
 
         return i - 1;
