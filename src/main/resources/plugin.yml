@@ -11,7 +11,7 @@ commands:
     §r     Displays this help menu \n
     §6/build roof <Material> [height] \n
     §r     Builds a roof with [height] layers out of <Material>.\n
-    §r     Default height is 4 Blocks
+    §r     Default height is 4 Blocks \n
 ====================================================
     "
     permission: FastBuild.build
