@@ -17,6 +17,22 @@ commands:
     §r     same material!\n
 ====================================================
     "
-    permission: FastBuild.build
+    permission: FastBuild.build.roof
     permission-message: You don't have permission for that command. You need permission FastBuild.build!
-
+permissions:
+    FastBuild.*:
+        description: Permits all FastBuild commands and actions
+        children:
+            FastBuild.build.roof: true
+            FastBuild.build.roof_make_hollow: true
+    FastBuild.build.*:
+        description: Permits all FastBuild commands
+        children:
+            FastBuild.build.roof: true
+            FastBuild.build.roof_make_hollow: true
+    FastBuild.build.roof:
+        description: Allows /build roof
+        default: op
+    FastBuild.build.roof_make_hollow:
+        description: Allows /build roof_make_hollow
+        default: op
