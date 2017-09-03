@@ -1,6 +1,7 @@
 package at.niemeczek.dev.fastbuild;
 
 import at.niemeczek.dev.fastbuild.build.BuildRoof;
+import at.niemeczek.dev.fastbuild.build.RoofHollow;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,7 +31,6 @@ public class FastBuildCommandExecutor implements CommandExecutor {
      * @param args   Array with all the arguments. args[0] is always a subcommand of /build
      * @return returns true if command succeeded and also when the command had problems, false is only returned when usage: from command.yml should be shown.
      */
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         //test if command is "build" and if it has been entered by Player
@@ -42,7 +42,10 @@ public class FastBuildCommandExecutor implements CommandExecutor {
             switch (args[0]) {
                 case "roof":
                     return onCommand_roof(sender, args);
-
+                case "roof_make_hollow":
+                    return onCommand_roof_make_hollow(sender);
+                case "rmh":
+                    return onCommand_roof_make_hollow(sender);
 
             }
 
@@ -69,6 +72,9 @@ public class FastBuildCommandExecutor implements CommandExecutor {
         if (material == null) {
             sender.sendMessage(ChatColor.RED + args[1] + " is not a valid material!");
             return true;
+        } else if (!material.isSolid()){
+            sender.sendMessage(ChatColor.RED + args[1] + " is not a solid material! Please choose a solid material!");
+            return true;
         }
         //Find out desired height of the roof
         int height;
@@ -90,6 +96,25 @@ public class FastBuildCommandExecutor implements CommandExecutor {
         BuildRoof buildRoof = new BuildRoof(((Player) sender).getPlayer());
         buildRoof.construct(location, material, height);
 
+        return true;
+    }
+
+    /**
+     * Processes the command /build roof_make_hollow
+     *
+     * @param sender Sender of the command
+     * @return always true
+     */
+    private boolean onCommand_roof_make_hollow(CommandSender sender){
+        // Find out location to start roof hollowing process from.
+        Location location = ((Player) sender).getTargetBlock((Set<Material>) null, 30).getLocation();
+        if (location.getBlock().isEmpty()) {
+            sender.sendMessage(ChatColor.RED + "Please look at the upper Layer of the roof you want to make hollow! \nMaybe you are too far away?");
+            return true;
+        }
+
+        //Make roof hollow
+        (new RoofHollow(((Player) sender).getPlayer())).makeHollow(location);
         return true;
     }
 }

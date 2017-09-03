@@ -146,11 +146,7 @@ public class BuildRoof extends Throwable {
         i = anyLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), i - 1, material);
         i = anyLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), i - 1, material);
 
-
-
-
         return i;
-
     }
     /**
      * Test if block at (location + x, y, z) is set

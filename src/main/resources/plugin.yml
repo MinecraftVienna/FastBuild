@@ -9,9 +9,12 @@ commands:
     §cFastBuild Help Menu \n
     §6/build help \n
     §r     Displays this help menu \n
-    §6/build roof <Material> [height] \n
-    §r     Builds a roof with [height] layers out of <Material>.\n
-    §r     Default height is 4 Blocks \n
+    §6/build roof <Material> <height> \n
+    §r     Builds a roof with <height> layers out of <Material>.\n
+    §6/build roof_make_hollow\n
+    §6/build rmh §r(Alias)\n
+    §r     Hollows out roof. Make sure neighbour roofs are not the \n
+    §r     same material!\n
 ====================================================
     "
     permission: FastBuild.build
