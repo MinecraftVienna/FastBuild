@@ -27,13 +27,6 @@ commands:
     "
 
 
-    /build undo [number] [player]
-         * if number is not set, last one is chosen
-         * if player is not set, CommandSender is chosen
-
-
-
-
     permission: FastBuild.build.roof
     permission-message: You don't have permission for that command. You need permission FastBuild.build!
 permissions:

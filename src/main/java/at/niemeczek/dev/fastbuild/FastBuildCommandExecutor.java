@@ -54,7 +54,7 @@ public class FastBuildCommandExecutor implements CommandExecutor {
                 case "rmh":
                     return onCommand_roof_make_hollow(sender);
                 case "listbuilds":
-                    return onCommand_listbuilds(sender, args);
+                    return onCommand_listBuilds(sender, args);
                 case "undo":
                     return onCommand_undo(sender, args);
                 case "clearhistory":
@@ -76,7 +76,7 @@ public class FastBuildCommandExecutor implements CommandExecutor {
     private boolean onCommand_roof(CommandSender sender, String[] args) {
         //Tests if arraylength is enough to contain all the arguments needed for that command
         if (args.length < 3) {
-            sender.sendMessage(ChatColor.DARK_RED + "Command usage: /build roof <Material> [height]");
+            sender.sendMessage(ChatColor.DARK_RED + "Command usage: /build roof <Material> <height> [Item-SubID]");
             return true;
         }
         //Find out Material to build roof out of
@@ -102,11 +102,20 @@ public class FastBuildCommandExecutor implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Please look at the spot you want the roof to be built at! \nMaybe you are too far away?");
             return true;
         }
+        // Find out Data value (color, ...)
+        byte data = 0;
+        try {
+            if (args.length >= 4){
+                data = Byte.parseByte(args[3]);
+            }
 
-
+            }catch (NumberFormatException e){
+            sender.sendMessage(ChatColor.RED + args[4] + " is not a valid subid!");
+            sender.sendMessage(ChatColor.RED + "See https://minecraft.gamepedia.com/Wool#Data_values for correct data values!");
+        }
         //Build Roof
         BuildRoof buildRoof = new BuildRoof(plugin, ((Player) sender).getPlayer());
-        buildRoof.construct(location, material, height);
+        buildRoof.construct(location, material, data, height);
 
         return true;
     }
@@ -135,7 +144,7 @@ public class FastBuildCommandExecutor implements CommandExecutor {
      *
      * @return returns always true
      */
-    private boolean onCommand_listbuilds(CommandSender sender, String[] args){
+    private boolean onCommand_listBuilds(CommandSender sender, String[] args){
         // find out which players actions should be listed
         Player commandAffected;
         if (args.length == 1){

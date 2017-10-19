@@ -35,6 +35,9 @@ public class BuildRoof extends Throwable {
      * @param height Number of Layers the roof will be high. Needs to be > 0
      */
     public boolean construct(Location location, Material material, int height){
+        return construct(location, material, (byte) 0, height);
+    }
+    public boolean construct(Location location, Material material, byte data, int height){
         //Tests for zero or negative roof height.
         if (height < 1){
             player.sendMessage("It is impossible to build a roof that has zero or negative height");
@@ -52,13 +55,13 @@ public class BuildRoof extends Throwable {
         // All requirements for successful roof creation seem to be fulfilled
         player.sendMessage("Creating Roof ...");
         //create base level (as big as house)
-        baseLevelFloodFill4Neighbour(location, size, material);
+        baseLevelFloodFill4Neighbour(location, size, material, data);
         //build another height - 1 levels on top of
         for (int j = 1; j < height; j++) {
             // Move Location Block up
             location.add(0, 1, 0);
             // Build Level
-            anyLevelFloodFill4Neighbour(location, size, material);
+            anyLevelFloodFill4Neighbour(location, size, material, data);
         }
         player.sendMessage("... Done!");
 
@@ -112,7 +115,7 @@ public class BuildRoof extends Throwable {
      * @param material Material to build roof out of
      * @return Blocks left to place (intern, see i)
      */
-    private int baseLevelFloodFill4Neighbour(Location location, int i, Material material) {
+    private int baseLevelFloodFill4Neighbour(Location location, int i, Material material, byte data) {
 
         // return if Block is not empty or Block underneath is NOT set (or i > 1 to prevent StackOverflow and running to infinity when set in "Superflat" at the ground)
         if (!isEmpty(location, 0, 0, 0) || isEmpty(location, 0, -1, 0) || i < 1){
@@ -123,10 +126,11 @@ public class BuildRoof extends Throwable {
             return 0;
         }
         location.getBlock().setType(material);
-        i = baseLevelFloodFill4Neighbour(location.clone().add(1, 0, 0), i - 1, material);
-        i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), i - 1, material);
-        i = baseLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), i - 1, material);
-        i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), i - 1, material);
+        location.getBlock().setData(data);
+        i = baseLevelFloodFill4Neighbour(location.clone().add(1, 0, 0), i - 1, material, data);
+        i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), i - 1, material, data);
+        i = baseLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), i - 1, material, data);
+        i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), i - 1, material, data);
 
 
 
@@ -143,7 +147,7 @@ public class BuildRoof extends Throwable {
      * @param material Material to build roof out of
      * @return Blocks left to place (intern, see i)
      */
-    private int anyLevelFloodFill4Neighbour(Location location, int i, Material material) {
+    private int anyLevelFloodFill4Neighbour(Location location, int i, Material material, byte data) {
         // return if Block is not empty or Block is NOT isSuitable-true (or i > 1 to prevent StackOverflow and running to infinity when set in "Superflat" at the ground)
         if (!isEmpty(location, 0, 0, 0) || !isSuitable(location) || i < 1) {
             return i + 1;
@@ -153,12 +157,13 @@ public class BuildRoof extends Throwable {
             return 0;
         }
         location.getBlock().setType(material);
+        location.getBlock().setData(data);
 
         //RECURSION
-        i = anyLevelFloodFill4Neighbour(location.clone().add(1, 0, 0), i - 1, material);
-        i = anyLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), i - 1, material);
-        i = anyLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), i - 1, material);
-        i = anyLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), i - 1, material);
+        i = anyLevelFloodFill4Neighbour(location.clone().add(1, 0, 0), i - 1, material, data);
+        i = anyLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), i - 1, material, data);
+        i = anyLevelFloodFill4Neighbour(location.clone().add(-1, 0, 0), i - 1, material, data);
+        i = anyLevelFloodFill4Neighbour(location.clone().add(0, 0, -1), i - 1, material, data);
 
         return i;
     }

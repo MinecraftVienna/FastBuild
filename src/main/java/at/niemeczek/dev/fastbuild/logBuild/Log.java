@@ -85,6 +85,7 @@ public class Log {
             printWriter.println(
                     location.getX() + " " + location.getY() + " " + location.getZ() + " " +
                     location.getWorld().getName() + " " + location.getBlock().getType()
+                    + " " + location.getBlock().getData()
             );
 
             printWriter.flush();
@@ -164,22 +165,24 @@ public class Log {
         return j;
 
     }
-    public void buildUndo(int filenumber){
+    public void buildUndo(int fileNumber){
 
         // undo every line in file
         try {
             BufferedReader in = null;
             try {
-                in = new BufferedReader(new FileReader(new File(userfolder, filenumber + ".txt")));
+                in = new BufferedReader(new FileReader(new File(userfolder, fileNumber + ".txt")));
                 String line;
                 Location location = null;
                 for (int i = 0; (line = in.readLine()) != null; i++) {
                     String[] strings = line.split(" ");
                     double x, y, z;
+                    byte b;
                     try {
                         x = Double.parseDouble(strings[0]);
                         y = Double.parseDouble(strings[1]);
                         z = Double.parseDouble(strings[2]);
+                        b = Byte.parseByte(strings[5]);
                     } catch (NumberFormatException e) {
                         this.player.sendMessage(ChatColor.RED + "Could not read location from file! Undo impossible!");
                         return;
@@ -187,7 +190,7 @@ public class Log {
                     location = new Location(Bukkit.getWorld(strings[3]), x, y, z);
 
                     location.getBlock().setType(Material.matchMaterial(strings[4]));
-
+                    location.getBlock().setData(b);
                 }
             } finally {
                 if (in != null) {
@@ -198,7 +201,7 @@ public class Log {
             player.sendMessage("OOPS! Something went wrong! There was an I/O-Exception!");
             System.err.println("I/O ERROR: " + ex.getMessage());
         }
-        new File(userfolder, filenumber + ".txt").delete();
+        new File(userfolder, fileNumber + ".txt").delete();
     }
     public boolean clearHistory(){
         player.sendMessage("Clearing History ...");
