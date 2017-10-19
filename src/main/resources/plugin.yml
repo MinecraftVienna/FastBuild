@@ -9,7 +9,7 @@ commands:
     §cFastBuild Help Menu \n
     §6/build help \n
     §r     Displays this help menu \n
-    §6/build roof <Material> <height> \n
+    §6/build roof <Material> <height> [item-SubID] \n
     §r     Builds a roof with <height> layers out of <Material>.\n
     §6/build roof_make_hollow\n
     §6/build rmh §r(Alias)\n
