@@ -1,17 +1,20 @@
 package at.niemeczek.dev.fastbuild.build;
 
+import at.niemeczek.dev.fastbuild.logBuild.Log;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
 
 public class RoofHollow {
     private static Player player;
-    public RoofHollow(Player player){
+    public RoofHollow(Plugin plugin, Player player){
         this.player = player;
+        log = new Log(plugin, player);
     }
-
+    private final Log log;
     /**
      * Makes roof hollow
      * @param location Must be at the top of the roof!
@@ -61,8 +64,8 @@ public class RoofHollow {
             return i + 1;
         }
         // Removes Block
+        log.logBlockToFile(location);
         location.getBlock().setType(Material.AIR);
-
         //RECURSION
         i = levelFloodFill(location.clone().add(1, 0, 0), i - 1, material);
         i = levelFloodFill(location.clone().add(0, 0, 1), i - 1, material);

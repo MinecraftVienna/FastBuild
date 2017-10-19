@@ -15,8 +15,25 @@ commands:
     §6/build rmh §r(Alias)\n
     §r     Hollows out roof. Make sure neighbour roofs are not the \n
     §r     same material!\n
-====================================================
+    §6/build listbuilds [player]\n
+    §r     Lists all stored builds \n
+    §6/build undo [number]\n
+    §6/build undo <number> [player]\n
+    §r     undoes your last issued or by [number] specified build, \n
+    §r     if player is specified, player's action will be undone. \n
+    §6/build clearhistory \n
+    §r     clears your history \n
+    ====================================================
     "
+
+
+    /build undo [number] [player]
+         * if number is not set, last one is chosen
+         * if player is not set, CommandSender is chosen
+
+
+
+
     permission: FastBuild.build.roof
     permission-message: You don't have permission for that command. You need permission FastBuild.build!
 permissions:
@@ -35,4 +52,16 @@ permissions:
         default: op
     FastBuild.build.roof_make_hollow:
         description: Allows /build roof_make_hollow
+        default: op
+    FastBuild.build.listbuilds.self:
+        description: Allows /build listbuilds
+        default: op
+    FastBuild.build.listbuilds.other:
+        description: Allows /build listbuilds <player>
+        default: op
+    FastBuild.build.undo.self:
+        description: Allows /build undo
+        default: op
+    FastBuild.build.undo.other:
+        description: Allows /build undo <player>
         default: op

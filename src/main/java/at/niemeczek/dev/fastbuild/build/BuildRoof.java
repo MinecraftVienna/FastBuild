@@ -1,8 +1,12 @@
 package at.niemeczek.dev.fastbuild.build;
+import at.niemeczek.dev.fastbuild.FastBuild;
+import at.niemeczek.dev.fastbuild.logBuild.Log;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * This class creates a roof
@@ -10,13 +14,14 @@ import org.bukkit.entity.Player;
 
 public class BuildRoof extends Throwable {
     private final Player player;
+    private final Log log;
     /**
      *
      * @param player Player that will start Roof creation. Needs to be not null
      */
-    public BuildRoof(Player player){
+    public BuildRoof(Plugin plugin, Player player){
         this.player = player;
-
+        log = new Log(plugin, player);
     }
     /**
      * Main Method for roof-building
@@ -56,7 +61,9 @@ public class BuildRoof extends Throwable {
             anyLevelFloodFill4Neighbour(location, size, material);
         }
         player.sendMessage("... Done!");
+
         return true;
+
 
     }
     /**
@@ -111,6 +118,10 @@ public class BuildRoof extends Throwable {
         if (!isEmpty(location, 0, 0, 0) || isEmpty(location, 0, -1, 0) || i < 1){
             return i + 1;
         }
+        // Places Block, logs action
+        if (!log.logBlockToFile(location)){
+            return 0;
+        }
         location.getBlock().setType(material);
         i = baseLevelFloodFill4Neighbour(location.clone().add(1, 0, 0), i - 1, material);
         i = baseLevelFloodFill4Neighbour(location.clone().add(0, 0, 1), i - 1, material);
@@ -137,7 +148,10 @@ public class BuildRoof extends Throwable {
         if (!isEmpty(location, 0, 0, 0) || !isSuitable(location) || i < 1) {
             return i + 1;
         }
-        // Places Block
+        // Places Block, logs action
+        if (!log.logBlockToFile(location)){
+            return 0;
+        }
         location.getBlock().setType(material);
 
         //RECURSION

@@ -3,6 +3,10 @@ package at.niemeczek.dev.fastbuild;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class FastBuild extends JavaPlugin {
+//    public JavaPlugin getPlugin(){
+//        return this;
+//    }
+
     @Override
     public void onEnable() {
 

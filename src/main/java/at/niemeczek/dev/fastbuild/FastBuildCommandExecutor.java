@@ -2,6 +2,7 @@ package at.niemeczek.dev.fastbuild;
 
 import at.niemeczek.dev.fastbuild.build.BuildRoof;
 import at.niemeczek.dev.fastbuild.build.RoofHollow;
+import at.niemeczek.dev.fastbuild.logBuild.Log;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Set;
 
 import static java.lang.Integer.parseInt;
+import static org.bukkit.Bukkit.getServer;
 
 public class FastBuildCommandExecutor implements CommandExecutor {
 
@@ -24,6 +26,11 @@ public class FastBuildCommandExecutor implements CommandExecutor {
 
     /**
      * processes all the entered commands
+     * Available subcommands:
+     *  - roof
+     *  - roof_make_hollow / rmh
+     *  - listbuilds [player]
+     *  - undo [player]
      *
      * @param sender Wo has sent the command
      * @param cmd    command that has been entered, currently only "build"
@@ -46,7 +53,12 @@ public class FastBuildCommandExecutor implements CommandExecutor {
                     return onCommand_roof_make_hollow(sender);
                 case "rmh":
                     return onCommand_roof_make_hollow(sender);
-
+                case "listbuilds":
+                    return onCommand_listbuilds(sender, args);
+                case "undo":
+                    return onCommand_undo(sender, args);
+                case "clearhistory":
+                    return new Log(this.plugin, ((Player) sender)).clearHistory();
             }
 
         }
@@ -93,7 +105,7 @@ public class FastBuildCommandExecutor implements CommandExecutor {
 
 
         //Build Roof
-        BuildRoof buildRoof = new BuildRoof(((Player) sender).getPlayer());
+        BuildRoof buildRoof = new BuildRoof(plugin, ((Player) sender).getPlayer());
         buildRoof.construct(location, material, height);
 
         return true;
@@ -114,7 +126,83 @@ public class FastBuildCommandExecutor implements CommandExecutor {
         }
 
         //Make roof hollow
-        (new RoofHollow(((Player) sender).getPlayer())).makeHollow(location);
+        (new RoofHollow(plugin, ((Player) sender).getPlayer())).makeHollow(location);
         return true;
     }
+
+    /**
+     * Processes the command /build listbuilds [player]
+     *
+     * @return returns always true
+     */
+    private boolean onCommand_listbuilds(CommandSender sender, String[] args){
+        // find out which players actions should be listed
+        Player commandAffected;
+        if (args.length == 1){
+            commandAffected = (Player) sender;
+        } else if (args.length == 2){
+            commandAffected = getServer().getPlayer(args[2]);
+            if (commandAffected == null){
+                sender.sendMessage(ChatColor.RED + args[2] + " is not online!");
+                return true;
+            }
+        } else {
+            sender.sendMessage("The command is " + ChatColor.RED + "/build listbuilds [player]");
+            return true;
+        }
+        // list actions
+        sender.sendMessage((new Log(plugin, commandAffected)).showStoredFiles());
+        return true;
+    }
+
+    /**
+     * Processes the command /build undo [number] [player]
+     * if number is not set, last one is chosen
+     * if player is not set, CommandSender is chosen
+     *
+     * @param sender Sender of the command, must not be Console or null
+     * @param args arguments can be:
+     *              - no Arguments
+     *              - number
+     *              - number and player
+     *
+     * @return returns always true
+     */
+    private boolean onCommand_undo(CommandSender sender, String[] args){
+        // find out which players actions should be undone
+        Player affectedPlayer;
+        if (args == null || args.length < 3){
+            affectedPlayer = (Player) sender;
+        } else if (args.length == 3){
+            affectedPlayer = getServer().getPlayer(args[2]);
+            if (affectedPlayer == null){
+                sender.sendMessage(ChatColor.RED + args[2] + " is not online!");
+                return true;
+            }
+        } else {
+            sender.sendMessage("The command is " + ChatColor.RED + "/build undo [number] [player]");
+            return true;
+        }
+
+        // find out which action should be undone
+        int undo_fileNr;
+        Log log = new Log(this.plugin, affectedPlayer);
+        if(args == null || args.length < 2){ //find out latest action, if no action is specified
+            undo_fileNr = log.latestFile();
+        } else{ //if action is specified, test if it is valid
+            try {
+                undo_fileNr = parseInt(args[1]);
+            } catch (NumberFormatException nFE) {
+                sender.sendMessage(
+                        ChatColor.RED + "It could not be identified which action should be undone since " + args[1] +
+                        " could not be read as an Integer. \n The correct command is /build undo [number] [player]"
+                );
+                return true;
+            }
+        }
+        //undo
+        log.buildUndo(undo_fileNr);
+        return true;
+    }
+
 }
